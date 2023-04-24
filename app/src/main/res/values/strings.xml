@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">Story App</string>
+
+    <string name="login">\u0020 Login</string>
+    <string name="register">\u0020 Register</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="description">Description</string>
+    <string name="date">Date</string>
+    <string name="new_to_app">New to StoryApp?</string>
+    <string name="already">Already have an account?</string>
+    <string name="camerax">Camera X</string>
+    <string name="upload">Upload</string>
+    <string name="gallery">Gallery</string>
+
+    <string name="this_is_avatar">This is profile picture</string>
+    <string name="add_story">Add story</string>
+    <string name="change_language">Change language</string>
+    <string name="this_is_image_story">This is image story</string>
+    <string name="this_is_login_image">This is login image</string>
+    <string name="what_s_happening">What\'s happening?</string>
+    <string name="add_image_from_gallery">Add image from gallery</string>
+    <string name="use_camera_x">Use camera X</string>
+    <string name="select_photo">Select photo</string>
+    <string name="add_a_desc">Add a description</string>
+    <string name="failed_take_photo">Failed to take photo</string>
+    <string name="failed_show_camera">Failed to display the camera</string>
+    <string name="success_upload">Story successfully upload</string>
+    <string name="upload_story_to_feed">Upload story to feed</string>
+
+    <string name="error">Error: Not found!</string>
+    <string name="success_login">Login successfully. Welcome, </string>
+    <string name="success_register">Account created successfully, please login</string>
+    <string name="email_format_wrong">Incorrect email format</string>
+    <string name="pass_not_valid">The password must be 8 characters</string>
+    <string name="pls_fill_auth">Please fill in the form fields</string>
+    <string name="not_match_auth">Email and password did not match</string>
+    <string name="email_not_valid">The email is not valid</string>
+    <string name="email_taken">The email is already taken!</string>
+    <string name="on_failure">Failed to load data</string>
+    <string name="permission_not_granted">The permission is not granted</string>
+    <string name="pls_fill_desc_photo">Please fill the description and choose photo to upload</string>
+    <string name="post_story">Post a story</string>
+    <string name="detail_story">Detail story</string>
+    <string name="log_out">Log out</string>
+
+    <string name="logout_ask">Are you sure you want to log out? </string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+</resources>

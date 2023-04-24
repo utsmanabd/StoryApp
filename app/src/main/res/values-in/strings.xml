@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">Story App</string>
+
+    <string name="login">\u0020 Login</string>
+    <string name="register">\u0020 Daftar</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Kata Sandi</string>
+    <string name="description">Deskripsi</string>
+    <string name="date">Tanggal</string>
+    <string name="new_to_app">Belum punya akun?</string>
+    <string name="already">Sudah punya akun?</string>
+    <string name="camerax">Camera X</string>
+    <string name="upload">Unggah</string>
+    <string name="gallery">Galeri</string>
+
+    <string name="this_is_avatar">Ini foto profil</string>
+    <string name="add_story">Tambah story</string>
+    <string name="change_language">Ubah bahasa</string>
+    <string name="this_is_image_story">Ini gambar story</string>
+    <string name="this_is_login_image">Ini gambar login</string>
+    <string name="what_s_happening">Apa yang anda pikirkan?</string>
+    <string name="add_image_from_gallery">Tambah gambar dari galeri</string>
+    <string name="use_camera_x">Gunakan camera X</string>
+    <string name="select_photo">Pilih foto</string>
+    <string name="add_a_desc">Tambah deskripsi</string>
+    <string name="failed_take_photo">Gagal mengambil foto</string>
+    <string name="failed_show_camera">Gagal menampilkan kamera</string>
+    <string name="success_upload">Story berhasil diupload</string>
+    <string name="upload_story_to_feed">Unggah story ke feed</string>
+
+    <string name="error">Error: Tidak ditemukan!</string>
+    <string name="success_login">Login berhasil. Selamat datang, </string>
+    <string name="success_register">Akun berhasil dibuat, silahkan login!</string>
+    <string name="email_format_wrong">Format email salah</string>
+    <string name="pass_not_valid">Kata sandi harus memiliki setidaknya 8 karakter</string>
+    <string name="pls_fill_auth">Silahkan isi kolom untuk melanjutkan</string>
+    <string name="not_match_auth">Email dan password tidak sesuai</string>
+    <string name="email_not_valid">Email tidak valid</string>
+    <string name="email_taken">Email sudah ada yang pakai</string>
+    <string name="on_failure">Gagal untuk memuat data</string>
+    <string name="permission_not_granted">Izin tidak diberikan</string>
+    <string name="pls_fill_desc_photo">Silahkan isi kolom deskripsi dan pilih foto yang akan diupload</string>
+    <string name="post_story">Posting story</string>
+    <string name="detail_story">Detail story</string>
+    <string name="log_out">Keluar</string>
+
+    <string name="logout_ask">Apakah anda yakin ingin keluar? </string>
+    <string name="yes">Ya</string>
+    <string name="no">Tidak</string>
+</resources>
