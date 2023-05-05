@@ -48,4 +48,12 @@
     <string name="logout_ask">Apakah anda yakin ingin keluar? </string>
     <string name="yes">Ya</string>
     <string name="no">Tidak</string>
+    <string name="no_connection">Tidak ada koneksi</string>
+    <string name="retry">Ulangi</string>
+    <string name="location">Lokasi</string>
+
+    <string name="maps_normal">Normal</string>
+    <string name="maps_terrain">Medan</string>
+    <string name="maps_satelite">Satelit</string>
+    <string name="maps_hybrid">Hybrid</string>
 </resources>

@@ -21,6 +21,7 @@ import com.everybodv.storyapp.view.model.StoriesViewModel
 import com.everybodv.storyapp.util.PreferencesFactory
 import com.everybodv.storyapp.util.setSafeOnClickListener
 import com.everybodv.storyapp.util.showLoading
+import com.google.android.gms.maps.model.LatLng
 import java.util.Timer
 import kotlin.concurrent.schedule
 
@@ -31,6 +32,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var authViewModel: AuthViewModel
     private lateinit var authPreferences: AuthPreferences
     private lateinit var storiesAdapter: StoriesAdapter
+
+    private var listLocation: ArrayList<LatLng>? = null
+    private var listUserName: ArrayList<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,6 +117,13 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.change_language -> {
                 startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
+            }
+            R.id.location -> {
+                startActivity(Intent(this, MapsActivity::class.java)
+                    .also {
+                        it.putExtra(Const.LIST_LOCATION, listLocation)
+                        it.putExtra(Const.LIST_USER_NAME, listUserName)
+                    })
             }
         }
         return super.onOptionsItemSelected(item)
