@@ -1,6 +1,5 @@
 package com.everybodv.storyapp.data.repository
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,8 +7,7 @@ import com.everybodv.storyapp.data.remote.response.LoginResponse
 import com.everybodv.storyapp.data.remote.response.LoginResult
 import com.everybodv.storyapp.data.remote.response.RegisterResponse
 import com.everybodv.storyapp.data.remote.retrofit.ApiConfig
-import com.everybodv.storyapp.util.showToast
-import com.everybodv.storyapp.view.model.AuthViewModel
+import com.everybodv.storyapp.util.Event
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,23 +16,30 @@ class AuthRepository {
     private val login = MutableLiveData<LoginResponse>()
 
     private val _registerUser = MutableLiveData<RegisterResponse>()
-    val registerUser : LiveData<RegisterResponse> = _registerUser
+    val registerUser: LiveData<RegisterResponse> = _registerUser
 
     private val _loginUser = MutableLiveData<LoginResult>()
-    val loginUser : LiveData<LoginResult> = _loginUser
+    val loginUser: LiveData<LoginResult> = _loginUser
 
     private val _isEnabled = MutableLiveData<Boolean>()
-    val isEnabled : LiveData<Boolean> = _isEnabled
+    val isEnabled: LiveData<Boolean> = _isEnabled
 
     private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading : LiveData<Boolean> = _isLoading
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _regMsg = MutableLiveData<Event<String>>()
+    val regMsg: LiveData<Event<String>>
+        get() = _regMsg
+
+    private val _logMsg = MutableLiveData<Event<String>>()
+    val logMsg: LiveData<Event<String>>
+        get() = _logMsg
 
     fun register(
         name: String,
         email: String,
         password: String,
-        context: Context,
-        msg: String): LiveData<RegisterResponse> {
+    ): LiveData<RegisterResponse> {
         _isEnabled.value = false
         _isLoading.value = true
 
@@ -49,15 +54,13 @@ class AuthRepository {
                     _isLoading.value = false
                     if (response.isSuccessful) {
                         _registerUser.postValue(response.body())
-                    }
-                    else {
+                    } else {
                         Log.e(TAG, "onFailure: ${response.message()}")
-                        showToast(context, msg)
+                        _regMsg.value = Event("")
                     }
                 }
 
                 override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-                    showToast(context, "Failed to load data. Message: ${t.message}")
                     Log.e(TAG, "onFailure: ${t.message}")
                 }
             })
@@ -66,9 +69,7 @@ class AuthRepository {
 
     fun login(
         email: String,
-        password: String,
-        context: Context,
-        msg: String = "Email or password is incorrect"
+        password: String
     ): LiveData<LoginResponse> {
         _isEnabled.value = false
         _isLoading.value = true
@@ -90,12 +91,11 @@ class AuthRepository {
                         }
                     } else {
                         Log.e(TAG, "onFailure: ${response.message()}")
-                        showToast(context, msg)
+                        _logMsg.value = Event("")
                     }
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                    showToast(context, "Failed to load data. Message: ${t.message}")
                     Log.e(TAG, "onFailure: ${t.message}")
                 }
 

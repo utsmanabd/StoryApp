@@ -9,16 +9,18 @@ import com.everybodv.storyapp.data.remote.response.ListStoryItem
 import com.everybodv.storyapp.data.remote.retrofit.ApiService
 import javax.inject.Inject
 
-class MainRepository@Inject constructor(
+class MainRepository @Inject constructor(
     private val storiesDatabase: StoriesDatabase,
     private val apiService: ApiService,
-    val authPreferences: AuthPreferences) {
+    val authPreferences: AuthPreferences
+) {
 
     fun getStories(): LiveData<PagingData<ListStoryItem>> {
         @OptIn(ExperimentalPagingApi::class)
         return Pager(
             config = PagingConfig(pageSize = 5),
-            remoteMediator = StoryRemoteMediator(storiesDatabase, apiService, authPreferences), pagingSourceFactory = {
+            remoteMediator = StoryRemoteMediator(storiesDatabase, apiService, authPreferences),
+            pagingSourceFactory = {
                 storiesDatabase.storiesDao().getStories()
             }
         ).liveData

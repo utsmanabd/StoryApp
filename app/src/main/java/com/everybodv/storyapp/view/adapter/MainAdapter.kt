@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.everybodv.storyapp.R
+import com.bumptech.glide.request.RequestOptions
 import com.everybodv.storyapp.data.remote.response.ListStoryItem
 import com.everybodv.storyapp.databinding.ItemRowMenuBinding
 import com.everybodv.storyapp.util.Const
@@ -15,14 +17,12 @@ import com.everybodv.storyapp.util.setSafeOnClickListener
 import com.everybodv.storyapp.view.ui.DetailStoryActivity
 import org.ocpsoft.prettytime.PrettyTime
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
+import java.util.*
 
-class StoriesAdapter(private val listStory : List<ListStoryItem>): RecyclerView.Adapter<StoriesAdapter.ViewHolder>() {
+class MainAdapter : PagingDataAdapter<ListStoryItem, MainAdapter.ViewHolder>(DIFF_CALLBACK) {
 
-    inner class ViewHolder(val binding: ItemRowMenuBinding): RecyclerView.ViewHolder(binding.root) {
-
+    inner class ViewHolder(private val binding: ItemRowMenuBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SimpleDateFormat")
         fun bind(item: ListStoryItem) {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
@@ -37,9 +37,10 @@ class StoriesAdapter(private val listStory : List<ListStoryItem>): RecyclerView.
                 tvDescription.text = item.description
                 Glide.with(itemView)
                     .load(item.photoUrl)
+                    .apply(RequestOptions().centerCrop())
                     .into(ivImageStory)
             }
-            itemView.setSafeOnClickListener{
+            itemView.setSafeOnClickListener {
                 with(it.context) {
                     val toDetailIntent = Intent(this, DetailStoryActivity::class.java)
                     toDetailIntent.putExtra(Const.DETAIL, item)
@@ -49,26 +50,40 @@ class StoriesAdapter(private val listStory : List<ListStoryItem>): RecyclerView.
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoriesAdapter.ViewHolder {
+    override fun onBindViewHolder(holder: MainAdapter.ViewHolder, position: Int) {
+        getItem(position)?.let { holder.bind(it) }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainAdapter.ViewHolder {
         val binding = ItemRowMenuBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: StoriesAdapter.ViewHolder, position: Int) {
-        val stories = listStory[position]
-        holder.bind(stories)
-        val ivFavorite = holder.binding.ivFavorite
-        val isFavorite = MutableLiveData(false)
-        ivFavorite.setOnClickListener {
-            if (isFavorite.value == false) {
-                ivFavorite.setImageResource(R.drawable.baseline_favorite_24)
-                isFavorite.value = true
-            } else {
-                ivFavorite.setImageResource(R.drawable.baseline_favorite_border_24)
-                isFavorite.value = false
+    companion object {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ListStoryItem>() {
+            override fun areItemsTheSame(oldItem: ListStoryItem, newItem: ListStoryItem): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(
+                oldItem: ListStoryItem,
+                newItem: ListStoryItem
+            ): Boolean {
+                return oldItem.id == newItem.id
+            }
+        }
+        val noopListUpdateCallback = object : ListUpdateCallback {
+            override fun onInserted(position: Int, count: Int) {
+            }
+
+            override fun onRemoved(position: Int, count: Int) {
+            }
+
+            override fun onMoved(fromPosition: Int, toPosition: Int) {
+            }
+
+            override fun onChanged(position: Int, count: Int, payload: Any?) {
             }
         }
     }
-
-    override fun getItemCount(): Int = listStory.size
 }

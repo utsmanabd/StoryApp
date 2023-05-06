@@ -9,15 +9,19 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.everybodv.storyapp.R
 import com.everybodv.storyapp.data.AuthPreferences
+import com.everybodv.storyapp.data.repository.AuthRepository
 import com.everybodv.storyapp.databinding.ActivityLoginBinding
 import com.everybodv.storyapp.util.*
 import com.everybodv.storyapp.view.model.AuthViewModel
+import com.everybodv.storyapp.view.model.Token
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var authPreferences: AuthPreferences
-    private lateinit var viewModel: AuthViewModel
+    private lateinit var authViewModel: AuthViewModel
+    private lateinit var token: Token
+    private lateinit var authRepository: AuthRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +31,12 @@ class LoginActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         authPreferences = AuthPreferences(this)
-        viewModel = ViewModelProvider(this, PreferencesFactory(authPreferences))[AuthViewModel::class.java]
+        token = Token(authPreferences)
+        authRepository = AuthRepository()
+        authViewModel = ViewModelProvider(
+            this,
+            PreferencesFactory(authPreferences, authRepository, this)
+        )[AuthViewModel::class.java]
 
         playAnimation()
         binding.btnLogin.setSafeOnClickListener { login() }
@@ -39,10 +48,10 @@ class LoginActivity : AppCompatActivity() {
     private fun login() {
         val email = binding.customEmail.text.toString().trim()
         val password = binding.customPassword.text.toString().trim()
-        viewModel.isEnabled.observe(this){ isEnabled ->
+        authViewModel.isEnabled.observe(this) { isEnabled ->
             binding.btnLogin.isEnabled = isEnabled
         }
-        viewModel.isLoading.observe(this){ isLoading ->
+        authViewModel.isLoading.observe(this) { isLoading ->
             showLoading(binding.progressBar, isLoading)
         }
 
@@ -54,10 +63,14 @@ class LoginActivity : AppCompatActivity() {
                 showToast(this, getString(R.string.email_format_wrong))
             }
             else -> {
-                val errorMsg = getString(R.string.not_match_auth)
-                viewModel.login(email, password, this, errorMsg)
-                viewModel.loginUser.observe(this){ login ->
-                    viewModel.setToken(login.token)
+                authViewModel.login(email, password)
+                authViewModel.logMsg.observe(this) {
+                    it.getContentIfNotHandled()?.let {
+                        showToast(this, getString(R.string.not_match_auth))
+                    }
+                }
+                authViewModel.loginUser.observe(this) { login ->
+                    token.setToken(login.token)
                     startActivity(Intent(this, MainActivity::class.java))
                     showToast(this, "${getString(R.string.success_login)} ${login.name}")
                 }

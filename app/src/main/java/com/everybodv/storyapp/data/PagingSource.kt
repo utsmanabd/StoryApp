@@ -21,9 +21,9 @@ class PagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ListStoryItem> {
 
         return try {
-            val position = params?.key ?: initialPageIndex
+            val position = params.key ?: initialPageIndex
             val token = authPreferences.getToken().first()
-            val response = apiService.getStory("Bearer ${token}", params.loadSize, position)
+            val response = apiService.getStory("Bearer $token", params.loadSize, position)
             val listStory = response.listStory
 
             LoadResult.Page(
@@ -39,7 +39,7 @@ class PagingSource(
     companion object {
         const val initialPageIndex = 1
 
-        fun capture(items: List<ListStoryItem>): PagingData<ListStoryItem> {
+        fun snapshot(items: List<ListStoryItem>): PagingData<ListStoryItem> {
             return PagingData.from(items)
         }
     }

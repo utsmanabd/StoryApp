@@ -8,7 +8,7 @@ import com.everybodv.storyapp.data.remote.response.ListStoryItem
 
 @Database(entities = [ListStoryItem::class, RemoteKeys::class], version = 1, exportSchema = false)
 
-abstract class StoriesDatabase: RoomDatabase() {
+abstract class StoriesDatabase : RoomDatabase() {
     abstract fun storiesDao(): StoriesDao
     abstract fun remoteKeysDao(): RemoteKeysDao
 

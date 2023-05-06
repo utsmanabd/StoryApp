@@ -11,10 +11,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val mainRepository: MainRepository) : ViewModel() {
+    private val mainRepository: MainRepository
+) : ViewModel() {
 
-    private val _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean> = _loading
+    val loading = MutableLiveData<Boolean>()
 
     fun getStories(): LiveData<PagingData<ListStoryItem>> =
         mainRepository.getStories()

@@ -28,16 +28,10 @@ interface ApiService {
     @POST("register")
     @FormUrlEncoded
     fun register(
-        @Field("name") name :String,
-        @Field("email") email :String,
-        @Field("password") password :String
+        @Field("name") name: String,
+        @Field("email") email: String,
+        @Field("password") password: String
     ): Call<RegisterResponse>
-
-    @GET("stories")
-    fun getStories(
-        @Header("Authorization") token: String,
-        @Query("size") size: Int
-    ): Call<StoriesResponse>
 
     @GET("stories")
     suspend fun getStory(
@@ -52,22 +46,13 @@ interface ApiService {
         @Query("location") location: Int
     ): Call<StoriesResponse>
 
-
-    @Multipart
-    @POST("stories")
-    fun uploadStory(
-        @Header("Authorization") token: String,
-        @Part file: MultipartBody.Part,
-        @Part ("description") description: RequestBody
-    ): Call<StoryUploadResponse>
-
     @Multipart
     @POST("stories")
     fun uploadStoryWithLoc(
         @Header("Authorization") token: String,
         @Part file: MultipartBody.Part,
-        @Part ("description") description: RequestBody,
-        @Part ("lat") lat: Double?,
-        @Part ("lon") lon: Double?
+        @Part("description") description: RequestBody,
+        @Part("lat") lat: Double?,
+        @Part("lon") lon: Double?
     ): Call<StoryUploadResponse>
 }

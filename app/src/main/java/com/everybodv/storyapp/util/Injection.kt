@@ -15,9 +15,11 @@ object Injection {
         val apiService = ApiConfig.getApiService()
         return MainRepository(storiesDatabase, apiService, authPreferences)
     }
+
     fun mapsRepo(): MapsRepository {
         return MapsRepository()
     }
+
     fun uploadRepo(): UploadRepository {
         return UploadRepository()
     }

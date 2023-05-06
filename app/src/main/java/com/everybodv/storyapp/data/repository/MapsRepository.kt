@@ -28,7 +28,7 @@ class MapsRepository {
                 }
 
                 override fun onFailure(call: Call<StoriesResponse>, t: Throwable) {
-                    Log.e(ContentValues.TAG,"onFailure: ${t.message}")
+                    Log.e(ContentValues.TAG, "onFailure: ${t.message}")
                 }
 
             })

@@ -7,20 +7,21 @@ import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.everybodv.storyapp.R
 import com.everybodv.storyapp.data.AuthPreferences
+import com.everybodv.storyapp.data.local.StoriesDatabase
+import com.everybodv.storyapp.data.repository.AuthRepository
 import com.everybodv.storyapp.databinding.ActivityMainBinding
-import com.everybodv.storyapp.util.Const
-import com.everybodv.storyapp.view.adapter.StoriesAdapter
-import com.everybodv.storyapp.view.model.AuthViewModel
-import com.everybodv.storyapp.view.model.StoriesViewModel
-import com.everybodv.storyapp.util.PreferencesFactory
-import com.everybodv.storyapp.util.setSafeOnClickListener
-import com.everybodv.storyapp.util.showLoading
+import com.everybodv.storyapp.util.*
+import com.everybodv.storyapp.view.adapter.LoadingAdapter
+import com.everybodv.storyapp.view.adapter.MainAdapter
+import com.everybodv.storyapp.view.model.*
 import com.google.android.gms.maps.model.LatLng
 import java.util.Timer
 import kotlin.concurrent.schedule
@@ -28,10 +29,18 @@ import kotlin.concurrent.schedule
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var storiesViewModel: StoriesViewModel
-    private lateinit var authViewModel: AuthViewModel
     private lateinit var authPreferences: AuthPreferences
-    private lateinit var storiesAdapter: StoriesAdapter
+
+    private lateinit var pagingModel: PagingModel
+    private lateinit var authRepository: AuthRepository
+    private lateinit var authViewModel: AuthViewModel
+    private lateinit var token: Token
+    private lateinit var storiesDatabase: StoriesDatabase
+    private lateinit var mainAdapter: MainAdapter
+
+    private val mainViewModel: MainViewModel by viewModels {
+        PreferencesFactory(authPreferences, authRepository, this)
+    }
 
     private var listLocation: ArrayList<LatLng>? = null
     private var listUserName: ArrayList<String>? = null
@@ -43,40 +52,62 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayShowTitleEnabled(true)
 
+        storiesDatabase = StoriesDatabase.getInstance(this)
+        mainAdapter = MainAdapter()
         authPreferences = AuthPreferences(this)
-        authViewModel = ViewModelProvider(this, PreferencesFactory(authPreferences))[AuthViewModel::class.java]
-        storiesViewModel = ViewModelProvider(this)[StoriesViewModel::class.java]
+        authRepository = AuthRepository()
+        token = Token(authPreferences)
+        authViewModel = ViewModelProvider(
+            this,
+            PreferencesFactory(authPreferences, authRepository, this)
+        )[AuthViewModel::class.java]
+        pagingModel = ViewModelProvider(
+            this,
+            PreferencesFactory(authPreferences, authRepository, this)
+        )[PagingModel::class.java]
 
-        authViewModel.getToken().observe(this){ token ->
+        token.getToken().observe(this) { token ->
             if (token != null) {
-                storiesViewModel.getStories("Bearer $token", this)
+                setAdapter()
+                mainViewModel.getStories().observe(this) { story ->
+                    mainAdapter.submitData(lifecycle, story)
+                    mainAdapter.snapshot().items
+                }
+                mainViewModel.loading.value = false
             } else {
                 Log.e(Const.TOKEN, "invalid token")
+                finishAffinity()
             }
         }
 
-        storiesViewModel.isLoading.observe(this) { isLoading ->
+        mainViewModel.loading.observe(this) { isLoading ->
             showLoading(binding.progressBar, isLoading)
         }
-
-        val layout = LinearLayoutManager(this@MainActivity)
-        val itemDecoration = DividerItemDecoration(this@MainActivity, layout.orientation)
-
-        storiesViewModel.stories.observe(this) { story ->
-            storiesAdapter = StoriesAdapter(story)
-            binding.rvStory.apply {
-                setHasFixedSize(true)
-                addItemDecoration(itemDecoration)
-                layoutManager = layout
-                adapter = storiesAdapter
-            }
-        }
-
         binding.refresh.setOnRefreshListener { refresh() }
         binding.fabUpload.setSafeOnClickListener {
             startActivity(Intent(this, UploadActivity::class.java))
         }
+    }
 
+    private fun setAdapter() {
+        val layout = LinearLayoutManager(this@MainActivity)
+        val itemDecoration = DividerItemDecoration(this@MainActivity, layout.orientation)
+
+        mainAdapter = MainAdapter()
+        mainAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (positionStart == 0) {
+                    binding.rvStory.smoothScrollToPosition(0)
+                }
+            }
+        })
+        binding.rvStory.apply {
+            layoutManager = layout
+            smoothScrollToPosition(0)
+            addItemDecoration(itemDecoration)
+            adapter =
+                mainAdapter.withLoadStateFooter(footer = LoadingAdapter { mainAdapter.retry() })
+        }
     }
 
     private fun refresh() {
@@ -98,19 +129,19 @@ class MainActivity : AppCompatActivity() {
             R.id.logout -> {
                 val builder = AlertDialog.Builder(this)
                 builder.setMessage(getString(R.string.logout_ask))
-                builder.setNegativeButton(getString(R.string.no)){ dialog, _ ->
+                builder.setNegativeButton(getString(R.string.no)) { dialog, _ ->
                     dialog.dismiss()
                 }
-                builder.setPositiveButton(getString(R.string.yes)){_, _ ->
+                builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
                     this.getSharedPreferences("data", 0)
                         .edit().clear().apply()
                     val toLoginIntent = Intent(this, LoginActivity::class.java)
                     toLoginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         .also {
-                            authViewModel.delToken()
+                            token.delToken()
                             startActivity(it)
                         }
-                    finish()
+                    finishAffinity()
                 }
                 val alert = builder.create()
                 alert.show()

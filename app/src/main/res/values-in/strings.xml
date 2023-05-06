@@ -10,7 +10,7 @@
     <string name="date">Tanggal</string>
     <string name="new_to_app">Belum punya akun?</string>
     <string name="already">Sudah punya akun?</string>
-    <string name="camerax">Camera X</string>
+    <string name="camerax">Camera</string>
     <string name="upload">Unggah</string>
     <string name="gallery">Galeri</string>
 
@@ -26,7 +26,8 @@
     <string name="add_a_desc">Tambah deskripsi</string>
     <string name="failed_take_photo">Gagal mengambil foto</string>
     <string name="failed_show_camera">Gagal menampilkan kamera</string>
-    <string name="success_upload">Story berhasil diupload</string>
+    <string name="success_upload">Story berhasil diunggah</string>
+    <string name="failed_upload">Gagal mengunggah story</string>
     <string name="upload_story_to_feed">Unggah story ke feed</string>
 
     <string name="error">Error: Tidak ditemukan!</string>
@@ -56,4 +57,7 @@
     <string name="maps_terrain">Medan</string>
     <string name="maps_satelite">Satelit</string>
     <string name="maps_hybrid">Hybrid</string>
+    <string name="share_location">Bagikan lokasi</string>
+
+    <string name="loc_permission">Izinkan lokasi</string>
 </resources>

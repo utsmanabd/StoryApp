@@ -6,25 +6,23 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.lifecycle.ViewModelProvider
 import com.everybodv.storyapp.R
 import com.everybodv.storyapp.data.AuthPreferences
-import com.everybodv.storyapp.util.PreferencesFactory
 import com.everybodv.storyapp.util.showToast
-import com.everybodv.storyapp.view.model.AuthViewModel
+import com.everybodv.storyapp.view.model.Token
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var authPreferences: AuthPreferences
-    private lateinit var viewModel: AuthViewModel
+    private lateinit var token: Token
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
         authPreferences = AuthPreferences(this)
-        viewModel = ViewModelProvider(this, PreferencesFactory(authPreferences))[AuthViewModel::class.java]
+        token = Token(authPreferences)
 
         Handler(Looper.getMainLooper()).postDelayed({
             token()
@@ -33,7 +31,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun token() {
-        viewModel.getToken().observe(this){ key ->
+        token.getToken().observe(this) { key ->
             if (key != null) {
                 if (!key.equals("NotFound")) {
                     startActivity(Intent(this, MainActivity::class.java))

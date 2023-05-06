@@ -20,18 +20,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/poppinsbold"
         android:text="@string/username"
         app:layout_constraintStart_toEndOf="@+id/iv_avatar"
         app:layout_constraintTop_toTopOf="@+id/iv_avatar" />
-
-    <TextView
-        android:id="@+id/tv_date_added"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/date"
-        app:layout_constraintStart_toStartOf="@+id/tv_username"
-        app:layout_constraintTop_toBottomOf="@+id/tv_username" />
 
     <TextView
         android:id="@+id/tv_description"
@@ -41,7 +34,7 @@
         android:maxLines="4"
         android:text="@string/description"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_date_added" />
+        app:layout_constraintTop_toBottomOf="@+id/iv_avatar" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
@@ -82,5 +75,15 @@
         app:layout_constraintStart_toEndOf="@+id/iv_favorite"
         app:layout_constraintTop_toBottomOf="@+id/card_view"
         app:srcCompat="@drawable/baseline_arrow_outward_24" />
+
+    <TextView
+        android:id="@+id/tvDateAdded"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/date"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/iv_favorite"
+        app:layout_constraintTop_toBottomOf="@+id/iv_favorite" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,8 +1,10 @@
 package com.everybodv.storyapp.view.ui
 
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,20 +17,22 @@ import com.everybodv.storyapp.data.repository.AuthRepository
 import com.everybodv.storyapp.data.repository.MapsRepository
 import com.everybodv.storyapp.databinding.ActivityMapsBinding
 import com.everybodv.storyapp.util.Const
-import com.everybodv.storyapp.util.PreferencesFactory2
-import com.everybodv.storyapp.view.model.AuthViewModel2
+import com.everybodv.storyapp.util.PreferencesFactory
+import com.everybodv.storyapp.view.model.AuthViewModel
 import com.everybodv.storyapp.view.model.MapsViewModel
 import com.everybodv.storyapp.view.model.Token
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var binding: ActivityMapsBinding
-    private lateinit var authViewModel2: AuthViewModel2
+    private lateinit var authViewModel: AuthViewModel
 
     private lateinit var mMap: GoogleMap
     private lateinit var authPreferences: AuthPreferences
@@ -37,14 +41,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var token: Token
 
     private val mapsViewModel: MapsViewModel by viewModels {
-        PreferencesFactory2(authPreferences, authRepository, this)
+        PreferencesFactory(authPreferences, authRepository, this)
     }
 
     private var listLocation: ArrayList<LatLng>? = null
     private var listUserName: ArrayList<String>? = null
 
     private val reqPermission =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()){isGranted ->
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 getMyLocation()
             }
@@ -71,10 +75,25 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.uiSettings.isMapToolbarEnabled = true
         mMap.uiSettings.isIndoorLevelPickerEnabled = true
 
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(-1.348994, 115.6112)))
+
         listLocation = intent.getParcelableArrayListExtra(Const.LIST_LOCATION)
         listUserName = intent.getStringArrayListExtra(Const.LIST_USER_NAME)
 
+        setMapStyle()
         getMyLocation()
+    }
+
+    private fun setMapStyle() {
+        try {
+            val success =
+                mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.")
+            }
+        } catch (exception: Resources.NotFoundException) {
+            Log.e(TAG, "Can't find style. Error: ", exception)
+        }
     }
 
     private fun mapsModel() {
@@ -83,11 +102,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapsRepository = MapsRepository()
         token = Token(authPreferences)
 
-        authViewModel2 = ViewModelProvider(this, PreferencesFactory2(authPreferences, authRepository, this))[AuthViewModel2::class.java]
-        token.getToken().observe(this){ token ->
+        authViewModel = ViewModelProvider(
+            this,
+            PreferencesFactory(authPreferences, authRepository, this)
+        )[AuthViewModel::class.java]
+        token.getToken().observe(this) { token ->
             if (token != null) {
                 mapsViewModel.getStoryWithLoc("Bearer $token")
-                mapsViewModel.getStories().observe(this){ stories ->
+                mapsViewModel.getStories().observe(this) { stories ->
                     stories?.let { story ->
                         for (i in story.listIterator()) {
                             val latLng = LatLng(i.lat!!, i.lon!!)
@@ -105,8 +127,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun getMyLocation() {
-        if (ContextCompat.checkSelfPermission(this.applicationContext, android.Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(
+                this.applicationContext,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) ==
+            PackageManager.PERMISSION_GRANTED
+        ) {
             mMap.isMyLocationEnabled = true
         } else {
             reqPermission.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -132,6 +158,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             R.id.hybrid -> mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    companion object {
+        const val TAG = "MapsActivity"
     }
 
 }

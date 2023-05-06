@@ -10,7 +10,7 @@
     <string name="date">Date</string>
     <string name="new_to_app">New to StoryApp?</string>
     <string name="already">Already have an account?</string>
-    <string name="camerax">Camera X</string>
+    <string name="camerax">Camera</string>
     <string name="upload">Upload</string>
     <string name="gallery">Gallery</string>
 
@@ -27,6 +27,7 @@
     <string name="failed_take_photo">Failed to take photo</string>
     <string name="failed_show_camera">Failed to display the camera</string>
     <string name="success_upload">Story successfully upload</string>
+    <string name="failed_upload">Failed to upload story</string>
     <string name="upload_story_to_feed">Upload story to feed</string>
 
     <string name="error">Error: Not found!</string>
@@ -55,4 +56,7 @@
     <string name="maps_terrain">Terrain</string>
     <string name="maps_satelite">Satellite</string>
     <string name="maps_hybrid">Hybrid</string>
+    <string name="share_location">Share location</string>
+
+    <string name="loc_permission">Allow location</string>
 </resources>

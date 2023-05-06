@@ -29,10 +29,11 @@ class CameraActivity : AppCompatActivity() {
         binding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.ibTakePhoto.setOnClickListener{ takePhoto() }
+        binding.ibTakePhoto.setOnClickListener { takePhoto() }
         binding.ivSwitchCam.setOnClickListener {
-            cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) CameraSelector.DEFAULT_FRONT_CAMERA
-            else CameraSelector.DEFAULT_BACK_CAMERA
+            cameraSelector =
+                if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) CameraSelector.DEFAULT_FRONT_CAMERA
+                else CameraSelector.DEFAULT_BACK_CAMERA
             startCamera()
         }
     }
@@ -48,19 +49,22 @@ class CameraActivity : AppCompatActivity() {
         val photoFile = createFile(application)
         val outputOption = ImageCapture.OutputFileOptions.Builder(photoFile).build()
         imageCapture.takePicture(outputOption, ContextCompat.getMainExecutor(this),
-        object : ImageCapture.OnImageSavedCallback{
-            override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                val intent = Intent()
-                intent.putExtra("Picture", photoFile)
-                intent.putExtra("IsBackCamera", cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA)
-                setResult(Const.CAMERAX_RESULT, intent)
-                finish()
-            }
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    val intent = Intent()
+                    intent.putExtra("Picture", photoFile)
+                    intent.putExtra(
+                        "IsBackCamera",
+                        cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA
+                    )
+                    setResult(Const.CAMERAX_RESULT, intent)
+                    finish()
+                }
 
-            override fun onError(exception: ImageCaptureException) {
-                showToast(this@CameraActivity, getString(R.string.failed_take_photo))
-            }
-        })
+                override fun onError(exception: ImageCaptureException) {
+                    showToast(this@CameraActivity, getString(R.string.failed_take_photo))
+                }
+            })
     }
 
     private fun startCamera() {

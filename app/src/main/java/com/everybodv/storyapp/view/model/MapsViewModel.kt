@@ -9,7 +9,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MapsViewModel @Inject constructor(
-    private val mapsRepository: MapsRepository) : ViewModel() {
+    private val mapsRepository: MapsRepository
+) : ViewModel() {
 
     fun getStoryWithLoc(token: String): LiveData<List<ListStoryItem>> =
         mapsRepository.getStoriesWithLoc(token)

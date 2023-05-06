@@ -14,7 +14,7 @@ interface StoriesDao {
     suspend fun addStory(listStoryItem: ListStoryItem)
 
     @Query("SELECT * FROM stories ORDER BY createdAt DESC")
-    fun getStories() : PagingSource<Int, ListStoryItem>
+    fun getStories(): PagingSource<Int, ListStoryItem>
 
     @Query("DELETE FROM stories")
     suspend fun delStory()

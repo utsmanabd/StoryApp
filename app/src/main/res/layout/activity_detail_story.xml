@@ -26,20 +26,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:transitionName="username"
             android:fontFamily="@font/poppinsbold"
             android:text="@string/username"
+            android:transitionName="username"
+            app:layout_constraintBottom_toTopOf="@+id/tv_location"
             app:layout_constraintStart_toEndOf="@+id/iv_avatar"
             app:layout_constraintTop_toTopOf="@+id/iv_avatar" />
 
         <TextView
-            android:id="@+id/tv_date_added"
+            android:id="@+id/tv_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:transitionName="date"
-            android:text="@string/date"
-            app:layout_constraintStart_toStartOf="@+id/tv_username"
-            app:layout_constraintTop_toBottomOf="@+id/tv_username" />
+            android:layout_marginStart="8dp"
+            android:text="@string/location"
+            android:textColor="#A0A0A0"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_avatar"
+            app:layout_constraintStart_toEndOf="@+id/iv_avatar" />
 
         <TextView
             android:id="@+id/tv_description"
@@ -51,6 +54,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_favorite" />
 
+        <TextView
+            android:id="@+id/tv_dates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/date"
+            android:textColor="#A0A0A0"
+            android:textSize="10sp"
+            app:layout_constraintStart_toStartOf="@+id/tv_description"
+            app:layout_constraintTop_toBottomOf="@+id/tv_description" />
+
         <ImageView
             android:id="@+id/iv_image_story"
             android:layout_width="match_parent"
@@ -59,7 +73,7 @@
             android:layout_marginTop="16dp"
             android:contentDescription="@string/this_is_image_story"
             app:layout_constraintStart_toStartOf="@+id/tv_description"
-            app:layout_constraintTop_toBottomOf="@+id/tv_date_added"
+            app:layout_constraintTop_toBottomOf="@+id/tv_location"
             tools:srcCompat="@drawable/image_placeholder" />
 
         <ImageView

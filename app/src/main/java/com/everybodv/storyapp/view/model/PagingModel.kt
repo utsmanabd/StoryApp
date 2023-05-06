@@ -12,7 +12,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PagingModel @Inject constructor(
-    mainRepository: MainRepository) : ViewModel() {
+    mainRepository: MainRepository
+) : ViewModel() {
 
-    val getStories: LiveData<PagingData<ListStoryItem>> = mainRepository.getStories().cachedIn(viewModelScope)
+    val getStories: LiveData<PagingData<ListStoryItem>> =
+        mainRepository.getStories().cachedIn(viewModelScope)
 }

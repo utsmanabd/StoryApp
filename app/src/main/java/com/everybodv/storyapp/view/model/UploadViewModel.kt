@@ -1,6 +1,5 @@
 package com.everybodv.storyapp.view.model
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.everybodv.storyapp.data.remote.response.ListStoryItem
@@ -13,20 +12,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UploadViewModel @Inject constructor(
-    private val uploadRepository: UploadRepository) : ViewModel() {
+    private val uploadRepository: UploadRepository
+) : ViewModel() {
 
     val stories: LiveData<List<ListStoryItem>> = uploadRepository.stories
-    val storyResponse : LiveData<StoryUploadResponse> = uploadRepository.storyResponse
-    val isLoading : LiveData<Boolean> = uploadRepository.isLoading
-    val isEnabled : LiveData<Boolean> = uploadRepository.isEnabled
+    val storyResponse: LiveData<StoryUploadResponse> = uploadRepository.storyResponse
+    val isLoading: LiveData<Boolean> = uploadRepository.isLoading
+    val isEnabled: LiveData<Boolean> = uploadRepository.isEnabled
 
 
     fun uploadStory(
         token: String,
         image: MultipartBody.Part,
         desc: RequestBody,
-        context: Context,
-        lat: Double?,
-        lon: Double?
-    ) = uploadRepository.uploadStory(token, image, desc, context, lat, lon)
+        lat: Double? = null,
+        lon: Double? = null
+    ) = uploadRepository.uploadStory(token, image, desc, lat, lon)
 }

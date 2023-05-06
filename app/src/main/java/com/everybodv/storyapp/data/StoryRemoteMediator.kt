@@ -16,8 +16,8 @@ import javax.inject.Inject
 class StoryRemoteMediator @Inject constructor(
     private val storiesDatabase: StoriesDatabase,
     private val apiService: ApiService,
-    private val authPreferences: AuthPreferences)
-    : RemoteMediator<Int, ListStoryItem>() {
+    private val authPreferences: AuthPreferences
+) : RemoteMediator<Int, ListStoryItem>() {
 
     override suspend fun load(
         loadType: LoadType,
@@ -30,12 +30,16 @@ class StoryRemoteMediator @Inject constructor(
             }
             LoadType.PREPEND -> {
                 val remoteKeys = getRemoteKeysForFirstItem(state)
-                val prevKeys = remoteKeys?.prevKey ?: return  MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                val prevKeys = remoteKeys?.prevKey ?: return MediatorResult.Success(
+                    endOfPaginationReached = remoteKeys != null
+                )
                 prevKeys
             }
             LoadType.APPEND -> {
                 val remoteKeys = getRemoteKeyForLastItem(state)
-                val nextKey = remoteKeys?.nextKey ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                val nextKey = remoteKeys?.nextKey ?: return MediatorResult.Success(
+                    endOfPaginationReached = remoteKeys != null
+                )
                 nextKey
             }
         }
@@ -81,6 +85,7 @@ class StoryRemoteMediator @Inject constructor(
             storiesDatabase.remoteKeysDao().getRemoteId(data.id)
         }
     }
+
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, ListStoryItem>): RemoteKeys? {
         return state.pages.lastOrNull {
             it.data.isNotEmpty()
@@ -88,7 +93,8 @@ class StoryRemoteMediator @Inject constructor(
             storiesDatabase.remoteKeysDao().getRemoteId(data.id)
         }
     }
-    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, ListStoryItem>): RemoteKeys?{
+
+    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, ListStoryItem>): RemoteKeys? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { id ->
                 storiesDatabase.remoteKeysDao().getRemoteId(id)
