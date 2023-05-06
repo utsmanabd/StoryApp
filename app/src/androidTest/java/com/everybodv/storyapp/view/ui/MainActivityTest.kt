@@ -1,7 +1,7 @@
 package com.everybodv.storyapp.view.ui
 
-import android.support.test.espresso.IdlingRegistry
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*

@@ -1,6 +1,6 @@
 package com.everybodv.storyapp.util
 
-import android.support.test.espresso.idling.CountingIdlingResource
+import androidx.test.espresso.idling.CountingIdlingResource
 
 object EspressoIdlingResource {
 
@@ -8,23 +8,4 @@ object EspressoIdlingResource {
 
     @JvmField
     val countingIdlingResource = CountingIdlingResource(RESOURCE)
-
-    fun increment() {
-        countingIdlingResource.increment()
-    }
-
-    fun decrement() {
-        if (!countingIdlingResource.isIdleNow) {
-            countingIdlingResource.decrement()
-        }
-    }
-}
-
-inline fun <T> wrapEspressoIdlingResource(function: () -> T): T {
-    EspressoIdlingResource.increment() // Set app as busy.
-    return try {
-        function()
-    } finally {
-        EspressoIdlingResource.decrement() // Set app as idle.
-    }
 }
