@@ -8,7 +8,8 @@
         android:icon="@drawable/baseline_location_on_24"
         app:showAsAction="ifRoom" />
 
-    <group>
+    <group
+        android:id="@+id/group_menu" >
         <item
             android:id="@+id/change_language"
             android:title="@string/change_language"

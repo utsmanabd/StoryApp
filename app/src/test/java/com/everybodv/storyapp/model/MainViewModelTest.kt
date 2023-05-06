@@ -22,6 +22,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -49,12 +50,10 @@ class MainViewModelTest{
         val dummy = Dummy.dummyStory()
         val data = PagingSource.snapshot(dummy)
 
-
-
         val expectedData = MutableLiveData<PagingData<ListStoryItem>>()
         expectedData.value = data
 
-        Mockito.`when`(viewModel.getStories()).thenReturn(expectedData)
+        `when`(viewModel.getStories()).thenReturn(expectedData)
         viewModel.getStories()
         val actualData = viewModel.getStories().getOrAwait()
 
@@ -68,7 +67,30 @@ class MainViewModelTest{
         assertNotNull(differ.snapshot())
         assertEquals(dummy,differ.snapshot())
         assertEquals(dummy.size,differ.snapshot().size)
-        assertEquals(dummy[0].id, differ.snapshot()[0]?.id)
+        assertEquals(dummy[0], differ.snapshot()[0])
+
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun getStoryWithNoDataReturnSuccess() = runTest {
+        val dummy = Dummy.dummyStoryNull
+        val data = PagingSource.snapshot(dummy)
+        val expectedData = MutableLiveData<PagingData<ListStoryItem>>()
+        expectedData.value = data
+
+        `when`(viewModel.getStories()).thenReturn(expectedData)
+        viewModel.getStories()
+        val actualData = viewModel.getStories().getOrAwait()
+
+        val differ = AsyncPagingDataDiffer(
+            diffCallback = MainAdapter.DIFF_CALLBACK,
+            updateCallback = MainAdapter.noopListUpdateCallback,
+            workerDispatcher = Dispatchers.Main
+        )
+        differ.submitData(actualData)
+
+        assertEquals(0, differ.snapshot().size)
 
     }
 }

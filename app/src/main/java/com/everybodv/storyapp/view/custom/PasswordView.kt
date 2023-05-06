@@ -36,7 +36,7 @@ class PasswordView : AppCompatEditText {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                error = if (s.count() < 8) "The password must be 6 characters" else null
+                error = if (s.count() < 8) "The password must be 8 characters" else null
             }
 
             override fun afterTextChanged(s: Editable?) {

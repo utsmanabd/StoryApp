@@ -66,7 +66,30 @@ class MainRepositoryTest{
         Assert.assertNotNull(differ.snapshot())
         Assert.assertEquals(dummy,differ.snapshot())
         Assert.assertEquals(dummy.size,differ.snapshot().size)
-        Assert.assertEquals(dummy[0].id, differ.snapshot()[0]?.id)
+        Assert.assertEquals(dummy[0], differ.snapshot()[0])
 
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun getStoryWithNoDataReturnSuccess() = runTest {
+        val dummy = Dummy.dummyStoryNull
+        val data = PagingSource.snapshot(dummy)
+        val viewModel = MainViewModel(repository)
+        val expectedData = MutableLiveData<PagingData<ListStoryItem>>()
+        expectedData.value = data
+
+        Mockito.`when`(repository.getStories()).thenReturn(expectedData)
+        viewModel.getStories()
+        val actualData = viewModel.getStories().getOrAwait()
+
+        val differ = AsyncPagingDataDiffer(
+            diffCallback = MainAdapter.DIFF_CALLBACK,
+            updateCallback = MainAdapter.noopListUpdateCallback,
+            workerDispatcher = Main
+        )
+        differ.submitData(actualData)
+
+        Assert.assertEquals(0, differ.snapshot().size)
     }
 }

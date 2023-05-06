@@ -25,6 +25,8 @@ object Dummy {
         return data
     }
 
+    val dummyStoryNull = emptyList<ListStoryItem>()
+
     fun dummyDesc() : RequestBody {
         val text ="didi"
         return text.toRequestBody()
